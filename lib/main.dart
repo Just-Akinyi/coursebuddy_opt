@@ -1,44 +1,38 @@
-import 'package:coursebuddy/assets/theme/app_theme.dart';
-import 'package:coursebuddy/widgets/auth_gate.dart';
-import 'package:coursebuddy/widgets/global_fcm_listener.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:coursebuddy/assets/theme/app_theme.dart';
+import 'package:coursebuddy/widgets/auth_gate.dart';
+import 'package:coursebuddy/widgets/global_fcm_listener.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase only once
   await Firebase.initializeApp();
 
-  // Initialize Firebase Messaging for FCM
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  await messaging.requestPermission();
-  String? token = await messaging.getToken();
-  if (kDebugMode) {
-    print("FCM Token: $token"); // only prints in debug
-  }
-  // print("FCM Token: $token");
-
-  // Listen for messages while the app is in the foreground
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    if (message.notification != null) {
-      if (kDebugMode) {
-        print(
-          'Notification: ${message.notification!.title}',
-        ); // only prints in debug
-      }
-
-      // print('Notification: ${message.notification!.title}');
-    }
-  });
-
-  // Initialize Firebase Crashlytics for error reporting
+  // Setup Firebase Crashlytics
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
+  PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
+
+  // Optionally request FCM permissions and fetch token asynchronously
+  FirebaseMessaging.instance.requestPermission();
+  FirebaseMessaging.instance.getToken().then((token) {
+    if (kDebugMode) print("FCM Token: $token");
+  });
+
+  // Listen to foreground FCM messages
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    if (kDebugMode && message.notification != null) {
+      print('Notification: ${message.notification!.title}');
+    }
+  });
 
   runApp(const MyApp());
 }
@@ -53,7 +47,7 @@ class MyApp extends StatelessWidget {
         title: 'CourseBuddy',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        home: const AuthGate(),
+        home: const AuthGate(), // Firebase is already initialized here
       ),
     );
   }
