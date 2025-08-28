@@ -57,8 +57,15 @@ Future<Widget> getDashboardForUser(String email, {bool mounted = true}) async {
     }
 
     return const NotRegisteredScreen();
-  } catch (_) {
-    // On any error, default to NotRegisteredScreen (safe fallback).
+  } catch (e, stack) {
+    print("getDashboardForUser error: $e");
+    print("Stack trace: $stack");
     return const NotRegisteredScreen();
   }
+  // } catch (_) {
+  //   // ✅ Log error optionally
+  //   print("getDashboardForUser error: $e");
+  //   // On any error, default to NotRegisteredScreen (safe fallback).
+  //   return const NotRegisteredScreen();
+  // }
 }

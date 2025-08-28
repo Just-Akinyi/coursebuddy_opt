@@ -1,3 +1,13 @@
+// Centralize role logic with 'users' collection
+// cleaner for production:
+// FIX
+// ✅ The Dart way to conditionally run code only in debug mode is to use:
+
+// assert(() {
+//   print("Something in debug only");
+//   return true;
+// }());
+
 import 'package:coursebuddy/auth/login_screen.dart';
 import 'package:coursebuddy/utils/user_router.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +34,9 @@ class AuthGate extends StatelessWidget {
 
         final lastSignIn = user.metadata.lastSignInTime ?? DateTime.now();
         final daysDiff = DateTime.now().difference(lastSignIn).inDays;
+
+        // ✅ Debug print for last sign-in time
+        print("User last signed in: ${user.metadata.lastSignInTime}");
 
         if (daysDiff > maxDaysLoggedIn) {
           FirebaseAuth.instance.signOut();

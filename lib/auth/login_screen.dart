@@ -1,6 +1,8 @@
 import 'package:coursebuddy/assets/theme/app_theme.dart';
 import 'package:coursebuddy/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -81,6 +83,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     if (_busy) const SizedBox(height: 12),
                     if (_busy) const CircularProgressIndicator(),
+                    // Temporary dev-only helper:
+                    //help you re-test account switching without uninstalling the app.
+                    //TO REPLACE WITH SWITCH_ACCOUNT
+                    TextButton(
+                      child: const Text("Force sign out (dev only)"),
+
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
+                        await GoogleSignIn().signOut();
+                        setState(() {});
+                      },
+                    ),
                   ],
                 ),
               ),

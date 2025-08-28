@@ -15,6 +15,10 @@ class AuthService {
     bool mounted = true,
   }) async {
     try {
+      // ✅ Sign out first to force account selection
+      await _auth.signOut();
+      await _googleSignIn.signOut();
+
       // Start Google Sign-In
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
@@ -45,6 +49,37 @@ class AuthService {
         await FirebaseMessaging.instance.requestPermission();
       } catch (_) {}
 
+      // Determine role before saving FCM token and user info
+      final firestore = FirebaseFirestore.instance;
+      String role = "guest"; // Default role
+
+      // Check role by querying known collections
+      final studentDoc = await firestore
+          .collection('students')
+          .doc(email)
+          .get();
+      if (studentDoc.exists) {
+        role = 'student';
+      } else if (await firestore
+          .collection('parents')
+          .doc(email)
+          .get()
+          .then((doc) => doc.exists)) {
+        role = 'parent';
+      } else if (await firestore
+          .collection('teachers')
+          .doc(email)
+          .get()
+          .then((doc) => doc.exists)) {
+        role = 'teacher';
+      } else if (await firestore
+          .collection('admins')
+          .doc(email)
+          .get()
+          .then((doc) => doc.exists)) {
+        role = 'admin';
+      }
+
       // Save/update FCM token
       try {
         final fcmToken = await FirebaseMessaging.instance.getToken();
@@ -53,6 +88,7 @@ class AuthService {
             'email': email,
             'fcmToken': fcmToken,
             'updatedAt': FieldValue.serverTimestamp(),
+            'role': role,
           }, SetOptions(merge: true));
         }
       } catch (_) {
