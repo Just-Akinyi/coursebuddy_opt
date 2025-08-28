@@ -37,6 +37,13 @@
             {
               "client_id": "782755032208-hnk6lfk0mmtri9hadgjtijhe5ti49463.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "782755032208-6ejij0hoe6m1pbk1duebu45bkji7tu6b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.coursebuddy"
+              }
             }
           ]
         }
