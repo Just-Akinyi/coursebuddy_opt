@@ -11,7 +11,6 @@ import 'package:coursebuddy/widgets/global_fcm_listener.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase only once
   await Firebase.initializeApp();
 
   // Setup Firebase Crashlytics
@@ -21,13 +20,13 @@ void main() async {
     return true;
   };
 
-  // Optionally request FCM permissions and fetch token asynchronously
-  FirebaseMessaging.instance.requestPermission();
+  // Request FCM permissions & token
+  await FirebaseMessaging.instance.requestPermission();
   FirebaseMessaging.instance.getToken().then((token) {
     if (kDebugMode) print("FCM Token: $token");
   });
 
-  // Listen to foreground FCM messages
+  // Foreground notifications listener
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     if (kDebugMode && message.notification != null) {
       print('Notification: ${message.notification!.title}');
@@ -47,7 +46,7 @@ class MyApp extends StatelessWidget {
         title: 'CourseBuddy',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        home: const AuthGate(), // Firebase is already initialized here
+        home: const AuthGate(),
       ),
     );
   }
