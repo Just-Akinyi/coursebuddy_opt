@@ -1,8 +1,6 @@
 import 'package:coursebuddy/assets/theme/app_theme.dart';
 import 'package:coursebuddy/services/auth_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -71,29 +69,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () async {
                             if (_busy) return;
                             setState(() => _busy = true);
-                            await _authService.signInWithGoogle(
-                              context,
-                              mounted: mounted,
-                            );
-                            if (!mounted) return;
-                            setState(() => _busy = false);
+                            try {
+                              await _authService.signInWithGoogle(context);
+                            } catch (e) {
+                              if (!mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Sign-in failed: $e')),
+                              );
+                            } finally {
+                              if (mounted) setState(() => _busy = false);
+                            }
                           },
                         ),
                       ),
                     ),
-                    if (_busy) const SizedBox(height: 12),
-                    if (_busy) const CircularProgressIndicator(),
-                    // Temporary dev-only helper:
-                    //help you re-test account switching without uninstalling the app.
-                    //TO REPLACE WITH SWITCH_ACCOUNT
-                    TextButton(
-                      child: const Text("Force sign out (dev only)"),
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signOut();
-                        await GoogleSignIn().signOut();
-                        setState(() {});
-                      },
-                    ),
+                    // if (_busy) const SizedBox(height: 12),
+                    // if (_busy) const CircularProgressIndicator(),
+                    // if (_busy)
+                    //   const Padding(
+                    //     padding: EdgeInsets.only(top: 12),
+                    //     child: CircularProgressIndicator(),
+                    //   ),
                   ],
                 ),
               ),
