@@ -88,7 +88,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     //TO REPLACE WITH SWITCH_ACCOUNT
                     TextButton(
                       child: const Text("Force sign out (dev only)"),
-
                       onPressed: () async {
                         await FirebaseAuth.instance.signOut();
                         await GoogleSignIn().signOut();

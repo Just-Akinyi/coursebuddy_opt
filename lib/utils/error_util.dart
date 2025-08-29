@@ -5,7 +5,6 @@ Future<void> showError(
   BuildContext context,
   Object error, [
   StackTrace? stackTrace,
-  bool mounted = true,
 ]) async {
   // Log to Crashlytics
   try {
@@ -16,7 +15,7 @@ Future<void> showError(
 
   final errorMessage = error.toString().replaceFirst('Exception: ', '');
 
-  if (!context.mounted || !mounted) return;
+  if (!context.mounted) return;
 
   showDialog(
     context: context,

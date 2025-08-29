@@ -7,65 +7,51 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// Returns the correct dashboard widget for a given user email.
-/// NOTE: This function does NOT use BuildContext and therefore
-/// should NOT check `mounted` internally. The caller must guard
-/// before using `context` (e.g., before navigation).
-Future<Widget> getDashboardForUser(String email, {bool mounted = true}) async {
+Future<Widget> getDashboardForUser(String email) async {
   try {
     final firestore = FirebaseFirestore.instance;
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser == null) return const NotRegisteredScreen();
 
-    // Students
-    final studentDoc = await firestore.collection('students').doc(email).get();
-    if (studentDoc.exists) {
-      final courseId =
-          studentDoc.data()?['courseId']?.toString() ?? "default_course";
-      return StudentDashboard(courseId: courseId);
+    final uid = firebaseUser.uid;
+    final userDoc = await firestore.collection('users').doc(uid).get();
+    // ✅ If missing, create fallback guest doc
+    if (!userDoc.exists) {
+      await firestore.collection('users').doc(uid).set({
+        'uid': uid,
+        'email': email,
+        'name': firebaseUser.displayName ?? 'Guest',
+        'role': 'guest',
+        'createdAt': FieldValue.serverTimestamp(),
+        'status': 'waiting_approval',
+      });
+      return const NotRegisteredScreen();
     }
 
-    // Parents
-    final parentDoc = await firestore.collection('parents').doc(email).get();
-    if (parentDoc.exists) {
-      return ParentDashboard();
-    }
+    // ✅ Cast to Map<String, dynamic>
+    final data = userDoc.data() as Map<String, dynamic>;
+    final role = data['role']?.toString() ?? 'guest';
 
-    // Teachers
-    final teacherDoc = await firestore.collection('teachers').doc(email).get();
-    if (teacherDoc.exists) {
-      return TeacherDashboard();
-    }
+    switch (role) {
+      case 'student':
+        final courseId = data['courseId']?.toString() ?? 'default_course';
+        return StudentDashboard(courseId: courseId);
 
-    // Admins
-    final adminDoc = await firestore.collection('admins').doc(email).get();
-    if (adminDoc.exists) {
-      return AdminDashboard();
-    }
+      case 'parent':
+        return ParentDashboard();
 
-    // Guests (create a guest record if missing)
-    final guestDoc = await firestore.collection("guests").doc(email).get();
-    if (!guestDoc.exists) {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await firestore.collection("guests").doc(email).set({
-          "uid": user.uid,
-          "email": email,
-          "name": user.displayName ?? "Guest User",
-          "status": "waiting_approval",
-          "createdAt": FieldValue.serverTimestamp(),
-        }, SetOptions(merge: true));
-      }
-    }
+      case 'teacher':
+        return TeacherDashboard();
 
-    return const NotRegisteredScreen();
+      case 'admin':
+        return AdminDashboard();
+
+      default:
+        return const NotRegisteredScreen();
+    }
   } catch (e, stack) {
     print("getDashboardForUser error: $e");
     print("Stack trace: $stack");
     return const NotRegisteredScreen();
   }
-  // } catch (_) {
-  //   // ✅ Log error optionally
-  //   print("getDashboardForUser error: $e");
-  //   // On any error, default to NotRegisteredScreen (safe fallback).
-  //   return const NotRegisteredScreen();
-  // }
 }
