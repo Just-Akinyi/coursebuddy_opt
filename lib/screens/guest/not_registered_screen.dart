@@ -1,3 +1,4 @@
+import 'package:coursebuddy/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,7 +20,24 @@ class NotRegisteredScreen extends StatelessWidget {
 
     // ✅ Listen to the user's document in the 'users' collection
     return Scaffold(
-      appBar: AppBar(title: const Text("Awaiting Approval")),
+      appBar: AppBar(
+        title: const Text("Awaiting Approval"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () async {
+            await FirebaseAuth.instance.signOut();
+            if (context.mounted) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  // 🚨 Replace 'YourLoginScreen' with the actual name of your login screen widget.
+                  builder: (context) => LoginScreen(),
+                ),
+              );
+            }
+          },
+        ),
+      ),
+
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection("users")
