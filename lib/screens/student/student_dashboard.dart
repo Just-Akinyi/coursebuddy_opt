@@ -1,11 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coursebuddy/widgets/status.dart';
 import 'package:flutter/material.dart';
 import 'student_materials_screen.dart';
 
 class StudentDashboard extends StatelessWidget {
   final String courseId;
+  final String status;
 
-  const StudentDashboard({super.key, required this.courseId});
+  const StudentDashboard({
+    super.key,
+    required this.courseId,
+    required this.status,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +28,10 @@ class StudentDashboard extends StatelessWidget {
         .where('isActive', isEqualTo: true);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Student Dashboard')),
+      appBar: AppBar(
+        title: const Text('Student Dashboard'),
+        actions: [StatusBadge(status: status)],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

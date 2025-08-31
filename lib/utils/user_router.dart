@@ -14,10 +14,35 @@ Future<Widget> getDashboardForUser(String email) async {
     if (firebaseUser == null) return const NotRegisteredScreen();
 
     final uid = firebaseUser.uid;
-    final userDoc = await firestore.collection('users').doc(uid).get();
-    // ✅ If missing, create fallback guest doc
-    if (!userDoc.exists) {
-      await firestore.collection('users').doc(uid).set({
+    final userDocRef = firestore.collection('users').doc(uid);
+    final userDoc = await userDocRef.get();
+
+    if (userDoc.exists) {
+      // ✅ User exists → check their role
+      final data = userDoc.data() as Map<String, dynamic>;
+      final role = data['role']?.toString() ?? 'guest';
+      final status = data['status']?.toString() ?? 'waiting_approval';
+
+      switch (role) {
+        case 'student':
+          final courseId = data['courseId']?.toString() ?? 'default_course';
+          return StudentDashboard(courseId: courseId, status: status);
+
+        case 'parent':
+          return ParentDashboard();
+
+        case 'teacher':
+          return TeacherDashboard();
+
+        case 'admin':
+          return AdminDashboard();
+
+        default:
+          return const NotRegisteredScreen();
+      }
+    } else {
+      // ❌ User not found → create schema AFTER checking
+      await userDocRef.set({
         'uid': uid,
         'email': email,
         'name': firebaseUser.displayName ?? 'Guest',
@@ -26,28 +51,6 @@ Future<Widget> getDashboardForUser(String email) async {
         'status': 'waiting_approval',
       });
       return const NotRegisteredScreen();
-    }
-
-    // ✅ Cast to Map<String, dynamic>
-    final data = userDoc.data() as Map<String, dynamic>;
-    final role = data['role']?.toString() ?? 'guest';
-
-    switch (role) {
-      case 'student':
-        final courseId = data['courseId']?.toString() ?? 'default_course';
-        return StudentDashboard(courseId: courseId);
-
-      case 'parent':
-        return ParentDashboard();
-
-      case 'teacher':
-        return TeacherDashboard();
-
-      case 'admin':
-        return AdminDashboard();
-
-      default:
-        return const NotRegisteredScreen();
     }
   } catch (e, stack) {
     print("getDashboardForUser error: $e");
