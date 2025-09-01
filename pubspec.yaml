@@ -43,7 +43,8 @@ dependencies:
   url_launcher: ^6.3.0
   cloud_functions: ^6.0.0
   sign_in_button: ^4.0.1
-  google_sign_in: 6.1.4
+  google_sign_in: ^6.1.4
+  logger: ^2.0.2
  
 
 dev_dependencies:

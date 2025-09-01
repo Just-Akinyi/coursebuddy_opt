@@ -1,5 +1,7 @@
+import 'package:coursebuddy/screens/student/student_dashboard.dart';
+import 'package:coursebuddy/screens/teacher/teacher_dashboard.dart';
 import 'package:coursebuddy/utils/error_util.dart';
-import 'package:coursebuddy/utils/user_router.dart';
+// import 'package:coursebuddy/utils/user_router.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -40,39 +42,52 @@ class AuthService {
       }
 
       final firestore = FirebaseFirestore.instance;
-      String role = 'guest'; // Default role
 
-      // ✅ Check known role collections
-      if ((await firestore.collection('students').doc(email).get()).exists) {
-        role = 'student';
-      } else if ((await firestore.collection('parents').doc(email).get())
-          .exists) {
-        role = 'parent';
-      } else if ((await firestore.collection('teachers').doc(email).get())
-          .exists) {
-        role = 'teacher';
-      } else if ((await firestore.collection('admins').doc(email).get())
-          .exists) {
-        role = 'admin';
+      // ✅ Check if user already exists in users/{uid}
+      final userDocRef = firestore.collection('users').doc(uid);
+      final userDoc = await userDocRef.get();
+
+      String role = 'guest'; // default
+      String status = 'waiting_approval';
+
+      if (userDoc.exists) {
+        final data = userDoc.data() as Map<String, dynamic>;
+        role = data['role']?.toString() ?? 'guest';
+        status = data['status']?.toString() ?? 'waiting_approval';
       }
 
       // ✅ Save/update user doc
       final fcmToken = await FirebaseMessaging.instance.getToken();
-      await firestore.collection('users').doc(uid).set({
+      await userDocRef.set({
         'uid': uid,
         'email': email,
         'name': user?.displayName ?? '',
         'fcmToken': fcmToken,
-        'role': role,
+        // 'role': role,
+        'role': 'student',
+        // 'role': 'teacher',
+        'status': status,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
-
-      // ✅ Route user
-      final target = await getDashboardForUser(email);
-      if (!context.mounted || !mounted) return;
+      if (!mounted) return;
+      // Navigate directly to TeacherDashboard
+      if (!mounted) return;
       Navigator.of(
         context,
-      ).pushReplacement(MaterialPageRoute(builder: (_) => target));
+      ).pushReplacement(MaterialPageRoute(builder: (_) => TeacherDashboard()));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) =>
+              StudentDashboard(courseId: 'default_course', status: 'active'),
+          // TeacherDashboard(),
+        ),
+      );
+      // ✅ Route user to their dashboard
+      //   final target = await getDashboardForUser(email);
+      //   if (!context.mounted || !mounted) return;
+      //   Navigator.of(
+      //     context,
+      //   ).pushReplacement(MaterialPageRoute(builder: (_) => target));
     } catch (e, stack) {
       if (!context.mounted || !mounted) return;
       showError(context, e, stack);

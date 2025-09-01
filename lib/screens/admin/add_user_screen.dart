@@ -1,6 +1,5 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coursebuddy/utils/error_util.dart';
 import 'package:coursebuddy/assets/theme/app_theme.dart';
 
@@ -20,16 +19,16 @@ class _AddUserScreenState extends State<AddUserScreen> {
   Future<void> _addUser() async {
     setState(() => _loading = true);
     try {
-      final credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim(),
-          );
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(credential.user!.uid)
-          .set({'email': _emailController.text.trim(), 'role': _role});
+      // ✅ Call Cloud Function instead of creating user locally
+      final callable = FirebaseFunctions.instance.httpsCallable('createUser');
+      await callable.call({
+        'email': _emailController.text.trim(),
+        'password': _passwordController.text.trim(),
+        'displayName': _emailController.text.trim().split(
+          '@',
+        )[0], // simple default
+        'role': _role,
+      });
 
       if (!mounted) return;
       Navigator.pop(context, true);

@@ -3,10 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-
+// firebase deploy --only functions//END
 import 'package:coursebuddy/assets/theme/app_theme.dart';
 import 'package:coursebuddy/widgets/auth_gate.dart';
 import 'package:coursebuddy/widgets/global_fcm_listener.dart';
+import 'package:logger/logger.dart';
+
+final logger = Logger();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +32,7 @@ void main() async {
   // Foreground notifications listener
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     if (kDebugMode && message.notification != null) {
-      print('Notification: ${message.notification!.title}');
+      logger.e('Notification: ${message.notification!.title}');
     }
   });
 

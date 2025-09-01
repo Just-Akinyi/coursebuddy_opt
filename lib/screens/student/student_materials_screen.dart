@@ -68,3 +68,6 @@ class StudentMaterialsScreen extends StatelessWidget {
     );
   }
 }
+// Bucket reference
+// gs://
+// course-buddy-5788e.firebasestorage.app

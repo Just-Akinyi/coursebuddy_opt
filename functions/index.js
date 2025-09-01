@@ -1,17 +1,17 @@
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1"); // ✅ force v1 API
 const admin = require("firebase-admin");
 admin.initializeApp();
 
 // ========== Authenticated Admin-Only User Creation ==========
 exports.createUser = functions.https.onCall(async (data, context) => {
   if (!context.auth || !context.auth.uid) {
-    throw new functions.https.HttpsError('unauthenticated', 'Login required.');
+    throw new functions.https.HttpsError("unauthenticated", "Login required.");
   }
 
   // Check caller role from Firestore
-  const callerRole = await admin.firestore().collection('roles').doc(context.auth.uid).get();
-  if (!callerRole.exists || callerRole.data().role !== 'admin') {
-    throw new functions.https.HttpsError('permission-denied', 'Only admins can create users.');
+  const callerRole = await admin.firestore().collection("roles").doc(context.auth.uid).get();
+  if (!callerRole.exists || callerRole.data().role !== "admin") {
+    throw new functions.https.HttpsError("permission-denied", "Only admins can create users.");
   }
 
   const { email, password, displayName, role, linkedTo } = data;
@@ -21,19 +21,26 @@ exports.createUser = functions.https.onCall(async (data, context) => {
     const uid = userRecord.uid;
 
     const now = admin.firestore.FieldValue.serverTimestamp();
-    await admin.firestore().collection('users').doc(uid).set({ email, createdAt: now });
-    await admin.firestore().collection('roles').doc(uid).set({ role, name: displayName, linkedTo: linkedTo ?? [] });
+    await admin.firestore().collection("users").doc(uid).set({
+      email,
+      createdAt: now,
+    });
+    await admin.firestore().collection("roles").doc(uid).set({
+      role,
+      name: displayName,
+      linkedTo: linkedTo ?? [],
+    });
 
-    return { status: 'success', uid };
+    return { status: "success", uid };
   } catch (error) {
     console.error("Error creating user:", error);
-    throw new functions.https.HttpsError('internal', error.message);
+    throw new functions.https.HttpsError("internal", error.message);
   }
 });
 
 // ========== FCM Notification on isSent = true ==========
 exports.notifyOnMaterial = functions.firestore
-  .document('courses/{cid}/materials/{mid}')
+  .document("courses/{cid}/materials/{mid}")
   .onUpdate(async (snap, context) => {
     const before = snap.before.data();
     const after = snap.after.data();
@@ -43,8 +50,8 @@ exports.notifyOnMaterial = functions.firestore
 
       // 1. Get all students assigned to the course
       const roleQuery = await admin.firestore()
-        .collection('roles')
-        .where('role', '==', 'student')
+        .collection("roles")
+        .where("role", "==", "student")
         .get();
 
       const tokens = [];
@@ -53,7 +60,7 @@ exports.notifyOnMaterial = functions.firestore
         const studentData = doc.data();
         if (studentData.linkedTo?.includes(courseId)) {
           const userId = doc.id;
-          const userDoc = await admin.firestore().collection('users').doc(userId).get();
+          const userDoc = await admin.firestore().collection("users").doc(userId).get();
           if (userDoc.exists && userDoc.data().fcmToken) {
             tokens.push(userDoc.data().fcmToken);
           }
@@ -62,17 +69,12 @@ exports.notifyOnMaterial = functions.firestore
 
       // 2. Send notification if we have tokens
       if (tokens.length > 0) {
-        const payload = {
+        await admin.messaging().sendEachForMulticast({
+          tokens,
           notification: {
             title: `New material: ${after.title}`,
             body: `New content is available in your course.`,
           },
-        };
-
-        // ✅ Fixed spreading issue — use proper structure
-        await admin.messaging().sendEachForMulticast({
-          tokens,
-          notification: payload.notification
         });
       }
     }
@@ -80,23 +82,22 @@ exports.notifyOnMaterial = functions.firestore
 
 // ========== Notify Parent on Session Completion ==========
 exports.onSessionComplete = functions.firestore
-  .document('courses/{courseId}/students/{studentId}/sessions/{sessionId}')
+  .document("courses/{courseId}/students/{studentId}/sessions/{sessionId}")
   .onUpdate(async (snap, context) => {
     const before = snap.before.data();
     const after = snap.after.data();
 
-    // Only trigger when session gets marked as complete
     if (!before.completed && after.completed) {
       const studentId = context.params.studentId;
 
       // 1. Get linked parents
-      const studentRoleDoc = await admin.firestore().collection('roles').doc(studentId).get();
-      const linkedParents = studentRoleDoc.data().linkedTo ?? [];
+      const studentRoleDoc = await admin.firestore().collection("roles").doc(studentId).get();
+      const linkedParents = studentRoleDoc.data()?.linkedTo ?? [];
 
       const tokens = [];
 
       for (const parentUid of linkedParents) {
-        const parentUserDoc = await admin.firestore().collection('users').doc(parentUid).get();
+        const parentUserDoc = await admin.firestore().collection("users").doc(parentUid).get();
         if (parentUserDoc.exists && parentUserDoc.data().fcmToken) {
           tokens.push(parentUserDoc.data().fcmToken);
         }
@@ -104,59 +105,53 @@ exports.onSessionComplete = functions.firestore
 
       // 2. Send FCM to parents
       if (tokens.length > 0) {
-        const payload = {
-          notification: {
-            title: `Class Completed`,
-            body: `Your child just completed a class in their course.`,
-          },
-        };
         await admin.messaging().sendEachForMulticast({
           tokens,
-          notification: payload.notification
+          notification: {
+            title: "Class Completed",
+            body: "Your child just completed a class in their course.",
+          },
         });
       }
     }
   });
-  
+
 // ========== Notify Parent on Quiz Result ==========
 exports.onQuizResult = functions.firestore
-  .document('courses/{courseId}/students/{studentId}/quizzes/{quizId}')
+  .document("courses/{courseId}/students/{studentId}/quizzes/{quizId}")
   .onCreate(async (snap, context) => {
     const data = snap.data();
     const { quizTitle, score, maxScore, passed } = data;
     const studentId = context.params.studentId;
 
     // 1. Get linked parents
-    const studentRoleDoc = await admin.firestore().collection('roles').doc(studentId).get();
-    const linkedParents = studentRoleDoc.data().linkedTo ?? [];
+    const studentRoleDoc = await admin.firestore().collection("roles").doc(studentId).get();
+    const linkedParents = studentRoleDoc.data()?.linkedTo ?? [];
 
     const tokens = [];
 
     for (const parentUid of linkedParents) {
-      const parentUserDoc = await admin.firestore().collection('users').doc(parentUid).get();
+      const parentUserDoc = await admin.firestore().collection("users").doc(parentUid).get();
       if (parentUserDoc.exists && parentUserDoc.data().fcmToken) {
         tokens.push(parentUserDoc.data().fcmToken);
       }
     }
 
     // 2. Build message
-    const safeScore = Number(score) || 0; // ✅ safer parsing
+    const safeScore = Number(score) || 0;
     const safeMax = Number(maxScore) || 10;
-    const result = (passed !== undefined) ? passed : (safeScore >= safeMax * 0.5); // default 50% pass
+    const result = passed !== undefined ? passed : safeScore >= safeMax * 0.5;
     const status = result ? "passed" : "failed";
     const message = `Your child has ${status} the quiz "${quizTitle}".`;
 
     // 3. Send notification
     if (tokens.length > 0) {
-      const payload = {
+      await admin.messaging().sendEachForMulticast({
+        tokens,
         notification: {
           title: `Quiz ${status.charAt(0).toUpperCase() + status.slice(1)}`,
           body: message,
         },
-      };
-      await admin.messaging().sendEachForMulticast({
-        tokens,
-        notification: payload.notification
       });
     }
   });

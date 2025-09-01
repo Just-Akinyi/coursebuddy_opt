@@ -69,27 +69,37 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () async {
                             if (_busy) return;
                             setState(() => _busy = true);
+
                             try {
                               await _authService.signInWithGoogle(context);
+
+                              if (!mounted) return;
+
+                              // ✅ context usage is safe here
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Signed in successfully!'),
+                                ),
+                              );
                             } catch (e) {
                               if (!mounted) return;
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text('Sign-in failed: $e')),
                               );
                             } finally {
-                              if (mounted) setState(() => _busy = false);
+                              if (mounted) {
+                                setState(() => _busy = false);
+                              }
                             }
                           },
                         ),
                       ),
                     ),
-                    // if (_busy) const SizedBox(height: 12),
-                    // if (_busy) const CircularProgressIndicator(),
-                    // if (_busy)
-                    //   const Padding(
-                    //     padding: EdgeInsets.only(top: 12),
-                    //     child: CircularProgressIndicator(),
-                    //   ),
+                    // if (_busy) ...[
+                    //   const SizedBox(height: 12),
+                    //   const CircularProgressIndicator(),
+                    // ],
                   ],
                 ),
               ),

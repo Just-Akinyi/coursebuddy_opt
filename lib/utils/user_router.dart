@@ -6,6 +6,9 @@ import 'package:coursebuddy/screens/teacher/teacher_dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
+
+final logger = Logger();
 
 Future<Widget> getDashboardForUser(String email) async {
   try {
@@ -53,8 +56,8 @@ Future<Widget> getDashboardForUser(String email) async {
       return const NotRegisteredScreen();
     }
   } catch (e, stack) {
-    print("getDashboardForUser error: $e");
-    print("Stack trace: $stack");
+    logger.e("getDashboardForUser error: $e");
+    logger.d("Stack trace: $stack");
     return const NotRegisteredScreen();
   }
 }
