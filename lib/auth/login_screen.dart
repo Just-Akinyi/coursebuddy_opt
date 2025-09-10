@@ -73,17 +73,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             try {
                               await _authService.signInWithGoogle(context);
 
-                              if (!mounted) return;
-
-                              // ✅ context usage is safe here
+                              if (!context.mounted) {
+                                return; // ✅ because using context below
+                              }
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Signed in successfully!'),
                                 ),
                               );
                             } catch (e) {
-                              if (!mounted) return;
-
+                              if (!context.mounted) return; // ✅ same reason
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text('Sign-in failed: $e')),
                               );

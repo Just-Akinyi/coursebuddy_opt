@@ -41,52 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDpwOQCzIu4upAVN46M3iqNvxSRmD5LgYQ',
-    appId: '1:782755032208:web:6e642630ca5d83c1c53c15',
-    messagingSenderId: '782755032208',
-    projectId: 'course-buddy-5788e',
-    authDomain: 'course-buddy-5788e.firebaseapp.com',
-    storageBucket: 'course-buddy-5788e.firebasestorage.app',
-    measurementId: 'G-YG4WR8Z9GG',
+    apiKey: 'AIzaSyD6EPvOrgnTvI9dvzYO477hYHIYYVWt9is',
+    appId: '1:998718300829:web:a997f7b729e110eba0aa74',
+    messagingSenderId: '998718300829',
+    projectId: 'course-budy',
+    authDomain: 'course-budy.firebaseapp.com',
+    storageBucket: 'course-budy.firebasestorage.app',
+    measurementId: 'G-7VEZFCJKLF',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDnzi-Xq0hk-9Tj9q0VJKgYfEpaQe4invc',
-    appId: '1:782755032208:android:aa18a5d4dec17066c53c15',
-    messagingSenderId: '782755032208',
-    projectId: 'course-buddy-5788e',
-    storageBucket: 'course-buddy-5788e.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBUkzk0u6kLK3EIOT0LyFVTwuC78W8pq4I',
-    appId: '1:782755032208:ios:fb1e91ee7e983660c53c15',
-    messagingSenderId: '782755032208',
-    projectId: 'course-buddy-5788e',
-    storageBucket: 'course-buddy-5788e.firebasestorage.app',
-    androidClientId: '782755032208-2fsdppjdh3g2iko5cj8a9c8nlch7r4lr.apps.googleusercontent.com',
-    iosClientId: '782755032208-6ejij0hoe6m1pbk1duebu45bkji7tu6b.apps.googleusercontent.com',
-    iosBundleId: 'com.example.coursebuddy',
+    apiKey: 'AIzaSyBA45wE3kdpzHMdR_8YwouPwvyDYOaiYyM',
+    appId: '1:998718300829:android:4cc98261ca64459fa0aa74',
+    messagingSenderId: '998718300829',
+    projectId: 'course-budy',
+    storageBucket: 'course-budy.firebasestorage.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBUkzk0u6kLK3EIOT0LyFVTwuC78W8pq4I',
-    appId: '1:782755032208:ios:fb1e91ee7e983660c53c15',
-    messagingSenderId: '782755032208',
-    projectId: 'course-buddy-5788e',
-    storageBucket: 'course-buddy-5788e.firebasestorage.app',
-    androidClientId: '782755032208-2fsdppjdh3g2iko5cj8a9c8nlch7r4lr.apps.googleusercontent.com',
-    iosClientId: '782755032208-6ejij0hoe6m1pbk1duebu45bkji7tu6b.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDpldgU6wefSuFImqJiwugtd5dtChFEnjo',
+    appId: '1:998718300829:ios:0d4e1bf6529a57c7a0aa74',
+    messagingSenderId: '998718300829',
+    projectId: 'course-budy',
+    storageBucket: 'course-budy.firebasestorage.app',
+    iosBundleId: 'com.example.coursebuddy',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDpldgU6wefSuFImqJiwugtd5dtChFEnjo',
+    appId: '1:998718300829:ios:0d4e1bf6529a57c7a0aa74',
+    messagingSenderId: '998718300829',
+    projectId: 'course-budy',
+    storageBucket: 'course-budy.firebasestorage.app',
     iosBundleId: 'com.example.coursebuddy',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDpwOQCzIu4upAVN46M3iqNvxSRmD5LgYQ',
-    appId: '1:782755032208:web:0e71144d74d27d8ac53c15',
-    messagingSenderId: '782755032208',
-    projectId: 'course-buddy-5788e',
-    authDomain: 'course-buddy-5788e.firebaseapp.com',
-    storageBucket: 'course-buddy-5788e.firebasestorage.app',
-    measurementId: 'G-62GNM5B5NL',
+    apiKey: 'AIzaSyD6EPvOrgnTvI9dvzYO477hYHIYYVWt9is',
+    appId: '1:998718300829:web:e3bd2391a4e0a69aa0aa74',
+    messagingSenderId: '998718300829',
+    projectId: 'course-budy',
+    authDomain: 'course-budy.firebaseapp.com',
+    storageBucket: 'course-budy.firebasestorage.app',
+    measurementId: 'G-MR2WKVG68R',
   );
+
 }

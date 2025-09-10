@@ -1,7 +1,5 @@
 {
   "projects": {
-    "coursebuddy": "course-buddy-5788e"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "course-budy"
+  }
 }
