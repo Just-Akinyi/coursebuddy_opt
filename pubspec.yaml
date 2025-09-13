@@ -44,6 +44,9 @@ dependencies:
   cloud_functions: ^6.0.0
   sign_in_button: ^4.0.1
   logger: ^2.0.2
+  device_info_plus: ^9.0.0
+  pdf: ^3.10.4
+  printing: ^5.11.1
  
 
 dev_dependencies:

@@ -15,21 +15,14 @@ class AppTheme {
 
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-
     primaryColor: primaryColor,
-
     colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
-
     scaffoldBackgroundColor: backgroundColor,
-
     textTheme: TextTheme(bodyMedium: TextStyle(color: textColor)),
-
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
-
         foregroundColor: Colors.white,
-
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),

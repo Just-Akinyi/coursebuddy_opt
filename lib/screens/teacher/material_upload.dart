@@ -1,7 +1,16 @@
+/// MaterialUploadScreen
+/// --------------------
+/// Allows teachers to upload new course notes.
+/// - Stored in `notes/` collection.
+/// - Only text type allowed for teachers.
+/// - New notes default to "waiting_approval" status.
+/// - Admin must approve before students see them.
+/// Fields: {title, content, type, courseId, createdBy, status, timestamp}
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:coursebuddy/assets/theme/app_theme.dart';
+import 'package:coursebuddy/constants/app_theme.dart';
 
 class MaterialUploadScreen extends StatefulWidget {
   const MaterialUploadScreen({super.key});
@@ -12,7 +21,7 @@ class MaterialUploadScreen extends StatefulWidget {
 
 class _MaterialUploadScreenState extends State<MaterialUploadScreen> {
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _urlController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
 
@@ -24,19 +33,22 @@ class _MaterialUploadScreenState extends State<MaterialUploadScreen> {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) throw Exception("User not logged in");
 
-      await FirebaseFirestore.instance.collection('materials').add({
+      await FirebaseFirestore.instance.collection('notes').add({
         'title': _titleController.text.trim(),
-        'url': _urlController.text.trim(),
-        'uploadedBy': user.email,
+        'content': _contentController.text.trim(),
+        'type': 'text', // Teachers can only add text notes
+        'courseId': 'python', // TODO: dynamically pass current courseId
+        'createdBy': user.email,
+        'status': 'waiting_approval',
         'timestamp': FieldValue.serverTimestamp(),
       });
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Material uploaded successfully!")),
+        const SnackBar(content: Text("Note submitted for approval.")),
       );
       _titleController.clear();
-      _urlController.clear();
+      _contentController.clear();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -51,7 +63,7 @@ class _MaterialUploadScreenState extends State<MaterialUploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Upload Material"),
+        title: const Text("Upload Course Note"),
         backgroundColor: AppTheme.primaryColor,
       ),
       body: Padding(
@@ -62,14 +74,15 @@ class _MaterialUploadScreenState extends State<MaterialUploadScreen> {
             children: [
               TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(labelText: "Material Title"),
+                decoration: const InputDecoration(labelText: "Note Title"),
                 validator: (v) => v!.isEmpty ? "Enter a title" : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
-                controller: _urlController,
-                decoration: const InputDecoration(labelText: "Material URL"),
-                validator: (v) => v!.isEmpty ? "Enter a URL" : null,
+                controller: _contentController,
+                maxLines: 6,
+                decoration: const InputDecoration(labelText: "Note Content"),
+                validator: (v) => v!.isEmpty ? "Enter content" : null,
               ),
               const SizedBox(height: 20),
               _loading
@@ -80,7 +93,7 @@ class _MaterialUploadScreenState extends State<MaterialUploadScreen> {
                         backgroundColor: AppTheme.primaryColor,
                         foregroundColor: Colors.white,
                       ),
-                      child: const Text("Upload"),
+                      child: const Text("Submit for Approval"),
                     ),
             ],
           ),
