@@ -1,11 +1,12 @@
-/// Screen shown for users with role 'guest' awaiting admin approval.
-/// Saves the user's FCM token on init for push notifications.
+// Screen shown for users with role 'guest' awaiting admin approval.
+// Saves the user's FCM token on init for push notifications.
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coursebuddy/services/user_router.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:coursebuddy/services/auth_service.dart';
 
 class NotRegisteredScreen extends StatefulWidget {
   const NotRegisteredScreen({super.key});
@@ -40,7 +41,9 @@ class _NotRegisteredScreenState extends State<NotRegisteredScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
+              // await FirebaseAuth.instance.signOut();
+              await AuthService().logout(context);
+
             },
           ),
         ],

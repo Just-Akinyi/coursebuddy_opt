@@ -1,1 +1,43 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"course-budy","appId":"1:998718300829:android:4cc98261ca64459fa0aa74","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"course-budy","configurations":{"android":"1:998718300829:android:4cc98261ca64459fa0aa74","ios":"1:998718300829:ios:0d4e1bf6529a57c7a0aa74","macos":"1:998718300829:ios:0d4e1bf6529a57c7a0aa74","web":"1:998718300829:web:a997f7b729e110eba0aa74","windows":"1:998718300829:web:e3bd2391a4e0a69aa0aa74"}}}}},"hosting":{"public":"build/web","ignore":["firebase.json","**/.*","**/node_modules/**"],"rewrites":[{"source":"**","destination":"/index.html"}]}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "course-budy",
+          "appId": "1:998718300829:android:4cc98261ca64459fa0aa74",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "course-budy",
+          "configurations": {
+            "android": "1:998718300829:android:4cc98261ca64459fa0aa74",
+            "web": "1:998718300829:web:a997f7b729e110eba0aa74"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": {
+    "source": "functions"
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
