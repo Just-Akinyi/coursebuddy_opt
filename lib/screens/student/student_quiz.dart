@@ -1,34 +1,34 @@
-/// StudentQuizScreen
-/// -----------------
-/// Reads approved quizzes from `quizzes/` collection (filtered by courseId).
-/// Each quiz **doc can now contain multiple questions** in a `questions` array.
-/// For each question:
-/// - Multiple choice options are shown.
-/// - On selecting an answer:
-///   - Correct = green highlight ✅
-///   - Wrong = red ❌ and correct answer shown in green.
-/// Navigation:
-/// - "Next" button collapses current question and opens the next.
-/// - At the end, results are saved in `quiz_submissions/`.
-///
-/// Firestore schema expected for each quiz doc:
-/// {
-///   "courseId": "python",
-///   "title": "Math Basics",
-///   "questions": [
-///     {
-///       "q": "What is 2+2?",
-///       "options": ["3", "4", "5", "6"],
-///       "correctIndex": 1
-///     },
-///     {
-///       "q": "What is 5-2?",
-///       "options": ["1", "2", "3", "4"],
-///       "correctIndex": 2
-///     }
-///   ],
-///   "status": "approved"
-/// }
+// StudentQuizScreen
+// -----------------
+// Reads approved quizzes from `quizzes/` collection (filtered by courseId).
+// Each quiz **doc can now contain multiple questions** in a `questions` array.
+// For each question:
+// - Multiple choice options are shown.
+// - On selecting an answer:
+//   - Correct = green highlight ✅
+//   - Wrong = red ❌ and correct answer shown in green.
+// Navigation:
+// - "Next" button collapses current question and opens the next.
+// - At the end, results are saved in `quiz_submissions/`.
+//
+// Firestore schema expected for each quiz doc:
+// {
+//   "courseId": "python",
+//   "title": "Math Basics",
+//   "questions": [
+//     {
+//       "q": "What is 2+2?",
+//       "options": ["3", "4", "5", "6"],
+//       "correctIndex": 1
+//     },
+//     {
+//       "q": "What is 5-2?",
+//       "options": ["1", "2", "3", "4"],
+//       "correctIndex": 2
+//     }
+//   ],
+//   "status": "approved"
+// }
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -126,7 +126,7 @@ class _StudentQuizScreenState extends State<StudentQuizScreen> {
                         const SizedBox(height: 16),
                         ...List.generate(options.length, (i) {
                           final selected = _selectedAnswers[_currentIndex];
-                          final isCorrect = i == correctIndex;
+                          // final isCorrect = i == correctIndex;
                           Color? tileColor;
 
                           if (selected != null) {

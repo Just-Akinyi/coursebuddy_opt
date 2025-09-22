@@ -1,84 +1,94 @@
-// AuthGate listens for auth changes, checks session expiration.
-// If expired, signs out asynchronously (avoids build-time side effects).
-// If valid, hands off to getDashboardForUser (UserRouter) for role-based routing.
-// Uses your custom showError utility to handle loading errors gracefully.
-// Debug-only prints wrapped with kDebugMode for clean production builds.
-
-import 'package:coursebuddy/screens/login.dart';
-import 'package:coursebuddy/services/user_router.dart';
-import 'package:coursebuddy/widgets/error_dialog.dart'; // your custom showError function
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:coursebuddy/services/user_router.dart';
+import 'package:coursebuddy/screens/login.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
-
-  // Max days allowed since last sign-in before forcing logout
-  static const int maxDaysLoggedIn = 7;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (ctx, snapshot) {
-        // Show loading indicator while waiting for auth state
+      builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        final user = snapshot.data;
-
-        // If no user logged in, show login screen
-        if (user == null) return const LoginScreen();
-
-        final lastSignIn = user.metadata.lastSignInTime ?? DateTime.now();
-        final daysDiff = DateTime.now().difference(lastSignIn).inDays;
-
-        // Debug-only log for last sign-in time
-        if (kDebugMode) {
-          print("User last signed in: ${user.metadata.lastSignInTime}");
-        }
-
-        // If user session is expired, sign out asynchronously and show login
-        if (daysDiff > maxDaysLoggedIn) {
-          Future.microtask(() => FirebaseAuth.instance.signOut());
+        if (!snapshot.hasData) {
           return const LoginScreen();
         }
 
-        // Delegate user dashboard loading to UserRouter utility
+        final user = snapshot.data!;
         return FutureBuilder<Widget>(
-          future: getDashboardForUser(user.email ?? ""),
-          builder: (ctx, snap) {
-            if (snap.connectionState == ConnectionState.waiting) {
+          future: getDashboardForUser(user.email ?? "noemail"),
+          builder: (context, dashboardSnapshot) {
+            if (dashboardSnapshot.connectionState ==
+                ConnectionState.waiting) {
               return const Scaffold(
                 body: Center(child: CircularProgressIndicator()),
               );
             }
-
-            if (snap.hasError) {
-              // Handle errors gracefully with your custom error dialog
-              Future.microtask(
-                  () => showError(ctx, snap.error!)); // snap.stackTrace));
-              return const Scaffold(
-                body: Center(child: Text('Something went wrong.')),
+            if (dashboardSnapshot.hasError) {
+              return Scaffold(
+                body: Center(child: Text("Error: ${dashboardSnapshot.error}")),
               );
             }
-
-            if (!snap.hasData) {
-              // Fallback loading state (should rarely occur)
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
-
-            // Return the dashboard widget determined by UserRouter
-            return snap.data!;
+            return dashboardSnapshot.data!;
           },
         );
       },
     );
   }
 }
+
+// import 'package:flutter/material.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:coursebuddy/services/user_router.dart';
+// import 'package:coursebuddy/screens/login.dart';
+
+// class AuthGate extends StatelessWidget {
+//   const AuthGate({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder<User?>(
+//       stream: FirebaseAuth.instance.authStateChanges(),
+//       builder: (context, snapshot) {
+//         // Still connecting
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const Scaffold(
+//             body: Center(child: CircularProgressIndicator()),
+//           );
+//         }
+
+//         // Not logged in → go to login
+//         if (!snapshot.hasData) {
+//           return const LoginScreen();
+//         }
+
+//         // Logged in → resolve dashboard
+//         final user = snapshot.data!;
+//         return FutureBuilder<Widget>(
+//           future: getDashboardForUser(user.email ?? "noemail"),
+//           builder: (context, dashboardSnapshot) {
+//             if (dashboardSnapshot.connectionState ==
+//                 ConnectionState.waiting) {
+//               return const Scaffold(
+//                 body: Center(child: CircularProgressIndicator()),
+//               );
+//             }
+//             if (dashboardSnapshot.hasError) {
+//               return Scaffold(
+//                 body: Center(child: Text("Error: ${dashboardSnapshot.error}")),
+//               );
+//             }
+//             return dashboardSnapshot.data!;
+//           },
+//         );
+//       },
+//     );
+//   }
+// }

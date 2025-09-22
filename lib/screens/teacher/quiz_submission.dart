@@ -1,12 +1,12 @@
 // ARE we using this really
-/// QuizSubmissionScreen
-/// --------------------
-/// Displays a list of all quiz submissions from students.
-/// Data source:
-/// - `quiz_submissions/` collection
-/// Fields expected:
-/// - studentEmail, score, submittedAt
-/// Teachers can review scores, but only admins can approve/reject.
+// QuizSubmissionScreen
+// --------------------
+// Displays a list of all quiz submissions from students.
+// Data source:
+// - `quiz_submissions/` collection
+// Fields expected:
+// - studentEmail, score, submittedAt
+// Teachers can review scores, but only admins can approve/reject.
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

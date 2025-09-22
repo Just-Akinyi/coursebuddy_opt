@@ -1,9 +1,9 @@
 //**ADD teacher notes collection
-/// Allows teachers to write course notes (text).
-/// - Stored in `notes/` collection.
-/// - Teachers can only add text notes.
-/// - New notes default to `waiting_approval` (admin must approve).
-/// Fields: {title, content, authorId, authorEmail, status, timestamp}
+// Allows teachers to write course notes (text).
+// - Stored in `notes/` collection.
+// - Teachers can only add text notes.
+// - New notes default to `waiting_approval` (admin must approve).
+// Fields: {title, content, authorId, authorEmail, status, timestamp}
 
 // Screen where teachers can create/upload their notes.
 // Saves note with authorId and sets status=waiting_approval for admin review.

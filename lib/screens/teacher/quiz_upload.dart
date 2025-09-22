@@ -1,27 +1,27 @@
-/// QuizUploadScreen
-/// ----------------
-/// Screen for teachers to create and upload new quizzes.
-/// Each quiz doc is stored in `quizzes/` collection.
-/// Schema:
-/// {
-///   "courseId": "python",
-///   "title": "Math Basics",
-///   "questions": [
-///     {
-///       "q": "What is 2+2?",
-///       "options": ["3", "4", "5", "6"],
-///       "correctIndex": 1
-///     }
-///   ],
-///   "status": "waiting_approval", // Admin will later approve/reject
-///   "createdAt": Timestamp
-/// }
-///
-/// Features:
-/// - Teacher can set quiz title + courseId.
-/// - Teacher can add multiple questions.
-/// - Each question has text, multiple options, and correct answer index.
-/// - Submits quiz to Firestore with `waiting_approval` status.
+// QuizUploadScreen
+// ----------------
+// Screen for teachers to create and upload new quizzes.
+// Each quiz doc is stored in `quizzes/` collection.
+// Schema:
+// {
+//   "courseId": "python",
+//   "title": "Math Basics",
+//   "questions": [
+//     {
+//       "q": "What is 2+2?",
+//       "options": ["3", "4", "5", "6"],
+//       "correctIndex": 1
+//     }
+//   ],
+//   "status": "waiting_approval", // Admin will later approve/reject
+//   "createdAt": Timestamp
+// }
+//
+// Features:
+// - Teacher can set quiz title + courseId.
+// - Teacher can add multiple questions.
+// - Each question has text, multiple options, and correct answer index.
+// - Submits quiz to Firestore with `waiting_approval` status.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
