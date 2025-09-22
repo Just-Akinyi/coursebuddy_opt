@@ -1,7 +1,7 @@
-/// Listens for incoming Firebase Cloud Messaging (FCM) notifications while the app is in the foreground,
-/// saves each notification to Firestore with a read/unread status,
-/// and displays a custom SnackBar alert to the user.
-/// Wraps child widget to enable global notification handling.
+// Listens for incoming Firebase Cloud Messaging (FCM) notifications while the app is in the foreground,
+// saves each notification to Firestore with a read/unread status,
+// and displays a custom SnackBar alert to the user.
+// Wraps child widget to enable global notification handling.
 
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -49,6 +49,7 @@ class _GlobalFcmListenerState extends State<GlobalFcmListener> {
       }
 
       // ✅ Show notification SnackBar
+      if (!mounted) return; // stops if widget is gone
       NotificationSnackBar.show(
         context,
         title: notification.title ?? 'New Notification',

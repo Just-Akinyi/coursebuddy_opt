@@ -1,6 +1,6 @@
-/// Displays a robust error dialog with options to retry, dismiss, and view details.
-/// Logs error to Firebase Crashlytics and presents a user-friendly dialog.
-/// Optionally accepts a retry callback to allow the user to retry the failed action.
+// Displays a robust error dialog with options to retry, dismiss, and view details.
+// Logs error to Firebase Crashlytics and presents a user-friendly dialog.
+// Optionally accepts a retry callback to allow the user to retry the failed action.
 
 import 'package:flutter/material.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -77,7 +77,7 @@ Future<void> showError(
                     Container(
                       margin: const EdgeInsets.only(top: 8),
                       padding: const EdgeInsets.all(8),
-                      color: Theme.of(context).colorScheme.surfaceVariant,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       constraints: const BoxConstraints(maxHeight: 200),
                       child: SingleChildScrollView(
                         child: Text(

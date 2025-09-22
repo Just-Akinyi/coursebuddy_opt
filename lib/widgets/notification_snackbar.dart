@@ -1,6 +1,6 @@
-/// Utility class to show custom styled SnackBars for notifications.
-/// Displays a floating SnackBar with a bold title and message body.
-/// Uses the app's primary color as background and shows for 5 seconds.
+// Utility class to show custom styled SnackBars for notifications.
+// Displays a floating SnackBar with a bold title and message body.
+// Uses the app's primary color as background and shows for 5 seconds.
 import 'package:flutter/material.dart';
 import '../constants/app_theme.dart';
 

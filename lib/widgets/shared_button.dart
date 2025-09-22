@@ -1,5 +1,5 @@
-/// A reusable button widget with an icon and label,
-/// styled according to app theme and responsive to screen size.
+// A reusable button widget with an icon and label,
+// styled according to app theme and responsive to screen size.
 
 import 'package:flutter/material.dart';
 import 'package:coursebuddy/constants/app_theme.dart';
