@@ -28,13 +28,13 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     QuizSubmissionScreen(),
   ];
 
-  final List<String> _titles = const [
-    "Dashboard",
-    "Upload Material",
-    "Upload Note",
-    "Upload Quiz",
-    "View Quiz Submissions",
-  ];
+  // final List<String> _titles = const [
+  //   "Dashboard",
+  //   "Upload Material",
+  //   "Upload Note",
+  //   "Upload Quiz",
+  //   "View Quiz Submissions",
+  // ];
 
   @override
   void initState() {

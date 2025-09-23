@@ -7,6 +7,7 @@
 // - Supports roles: student, teacher, admin, parent (optional), and guest
 // - Persists role locally, but Firestore is always the source of truth
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -31,19 +32,25 @@ Future<Widget> getDashboardForUser(String email) async {
     final String role = (data['role'] ?? UserRoles.guest).toString();
 
     // 🔹 Debug print
-    print("🔍 Firestore role for $email (uid=$uid): $role");
+    if (kDebugMode) {
+      print("🔍 Firestore role for $email (uid=$uid): $role");
+    }
 
     // 🔹 Firestore role is always source of truth
     await RoleManager.saveRole(role);
 
     if (role == UserRoles.guest) {
-      print("➡️ Routing to NotRegisteredScreen (guest)");
+      if (kDebugMode) {
+        print("➡️ Routing to NotRegisteredScreen (guest)");
+      }
       return const NotRegisteredScreen();
     }
 
     switch (role) {
       case UserRoles.student:
-        print("➡️ Routing to StudentDashboard");
+        if (kDebugMode) {
+          print("➡️ Routing to StudentDashboard");
+        }
         return StudentDashboard(
           courseId: data['courseId'] ?? 'default_course',
           status: 'Active',
@@ -52,19 +59,27 @@ Future<Widget> getDashboardForUser(String email) async {
       //   print("➡️ Routing to ParentDashboard");
       //   return ParentDashboard();
       case UserRoles.teacher:
-        print("➡️ Routing to TeacherDashboard");
+        if (kDebugMode) {
+          print("➡️ Routing to TeacherDashboard");
+        }
         return const TeacherDashboard();
       case UserRoles.admin:
-        print("➡️ Routing to AdminDashboard");
+        if (kDebugMode) {
+          print("➡️ Routing to AdminDashboard");
+        }
         return const AdminDashboard();
       default:
-        print("⚠️ Unknown role: $role → NotRegisteredScreen");
+        if (kDebugMode) {
+          print("⚠️ Unknown role: $role → NotRegisteredScreen");
+        }
         return const NotRegisteredScreen();
     }
   }
 
   // 🔹 New user → create guest record
-  print("🆕 No Firestore doc found. Creating guest record for $email (uid=$uid)");
+  if (kDebugMode) {
+    print("🆕 No Firestore doc found. Creating guest record for $email (uid=$uid)");
+  }
   await docRef.set({
     'uid': uid,
     'email': email,
@@ -89,7 +104,9 @@ Future<Widget> getDashboardForUser(String email) async {
       'email': email,
       'timestamp': FieldValue.serverTimestamp(),
     });
-    print("📌 Guest visit logged for $email");
+    if (kDebugMode) {
+      print("📌 Guest visit logged for $email");
+    }
   }
 
   return const NotRegisteredScreen();

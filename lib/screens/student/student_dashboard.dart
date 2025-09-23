@@ -136,8 +136,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 setState(() => _selectedIndex = index);
-                if (!isWide && Navigator.canPop(context))
+                if (!isWide && Navigator.canPop(context)) {
                   Navigator.pop(context);
+                }
               },
               child: Container(
                 width: double.infinity,
@@ -145,7 +146,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 alignment: Alignment.center,
                 decoration: selected
                     ? BoxDecoration(
-                        color: AppTheme.primaryColor.withOpacity(0.12),
+                        // color: AppTheme.primaryColor.withOpacity(0.12),
+                        color: AppTheme.primaryColor.withAlpha(31),
                         borderRadius: BorderRadius.circular(8),
                       )
                     : null,
@@ -165,7 +167,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
           ),
           title: Text(label),
           selected: selected,
-          selectedTileColor: AppTheme.primaryColor.withOpacity(0.12),
+          // selectedTileColor: AppTheme.primaryColor.withOpacity(0.12),
+          selectedTileColor: AppTheme.primaryColor.withAlpha(31),
+
           onTap: () {
             setState(() => _selectedIndex = index);
             if (!isWide && Navigator.canPop(context)) Navigator.pop(context);

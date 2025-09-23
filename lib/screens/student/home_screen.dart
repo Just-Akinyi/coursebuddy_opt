@@ -188,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: days.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final day = days[index];
           final dayKey = DateFormat('yyyy-MM-dd').format(day);
@@ -259,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const Divider(),
               ],
             );
-          }).toList(),
+          }),
         ],
       ),
     );

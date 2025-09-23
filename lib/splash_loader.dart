@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+// import 'dart:math' as math;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,6 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Navigate after 2s (replace with your init logic)
     Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return; 
       Navigator.pushReplacementNamed(context, '/auth'); 
     });
   }

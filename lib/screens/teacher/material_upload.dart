@@ -33,7 +33,7 @@ class _MaterialUploadScreenState extends State<MaterialUploadScreen> {
         "createdByEmail":
             FirebaseAuth.instance.currentUser?.email ?? "unknown",
       });
-
+      if (!mounted) return; 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("✅ Material uploaded for approval")),
       );
@@ -42,6 +42,7 @@ class _MaterialUploadScreenState extends State<MaterialUploadScreen> {
       _contentController.clear();
       _codeController.clear();
     } catch (e) {
+      if (!mounted) return; 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("❌ Upload failed: check your permissions.")),
       );
