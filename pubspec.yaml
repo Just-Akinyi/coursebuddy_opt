@@ -54,10 +54,12 @@ dependencies:
   # html_editor_enhanced: ^2.7.1
   # flutter_highlight: ^0.7.0
   # flutter_html: ^2.2.1
-
   flutter_html: ^3.0.0
   flutter_highlight: ^0.7.0
   file_picker: ^10.3.2
+  liquid_progress_indicator: ^0.4.0
+  video_player: ^2.9.1
+
   
 
 dev_dependencies:
@@ -70,9 +72,20 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_native_splash: ^2.4.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+flutter_native_splash:
+  color: "#FFFFFF" # white background
+  image: assets/images/coursebuddy_logo.png
+  android: true
+  ios: true
+  web: false  # you already did custom web
+
+  android_12:
+    image: assets/images/coursebuddy_logo.png
+    icon_background_color: "#FFFFFF"
 
 # The following section is specific to Flutter packages.
 flutter:

@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
@@ -31,8 +18,80 @@
 
   <title>coursebuddy</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    body {
+      margin: 0;
+      background: white; /* fallback */
+    }
+    #loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .spinner {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner::before {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border: 10px solid transparent;
+      border-radius: 50%;
+      background: conic-gradient(orange, lightblue);
+      -webkit-mask: 
+        radial-gradient(farthest-side, transparent calc(100% - 10px), black 0);
+      -webkit-mask-composite: destination-in;
+              mask-composite: intersect;
+      animation: spin 1.5s linear infinite;
+    }
+
+    .spinner img {
+      width: 100px;
+      height: auto;
+      border-radius: 12px;
+      z-index: 2;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Hidden state for smooth exit */
+    #loading.fade-out {
+      opacity: 0;
+      transform: scale(0.9);
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
+  <div id="loading">
+    <div class="spinner">
+      <img src="assets/images/coursebuddy_logo.png" alt="CourseBuddy Logo" />
+    </div>
+  </div>
+
   <script src="flutter_bootstrap.js" async></script>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      const loader = document.getElementById('loading');
+      if (loader) {
+        loader.classList.add('fade-out');
+        setTimeout(() => loader.remove(), 600); // remove after animation
+      }
+    });
+  </script>
 </body>
 </html>

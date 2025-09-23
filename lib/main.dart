@@ -32,6 +32,7 @@ import 'package:flutter/foundation.dart';
 import 'package:coursebuddy/constants/app_theme.dart';
 // import 'package:coursebuddy/screens/admin/admin_dashboard.dart';
 import 'package:coursebuddy/services/auth_gate.dart';
+// import 'package:coursebuddy/splash_loader.dart';
 import 'package:coursebuddy/services/global_fcm_listener.dart';
 import 'package:logger/logger.dart';
 import 'firebase_options.dart';
@@ -87,6 +88,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         home: const AuthGate(),
+        // home: const SplashLoader(),
         //home: getDashboardForUser();
         // home: AdminDashboard(),
       ),
