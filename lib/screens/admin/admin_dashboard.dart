@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coursebuddy/screens/admin/add_course.dart';
+import 'package:coursebuddy/screens/admin/course_list.dart';
 import 'package:coursebuddy/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:coursebuddy/constants/app_theme.dart';
@@ -12,8 +14,9 @@ class AdminDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Query allEventsQuery =
-        FirebaseFirestore.instance.collection('events');
+    final Query allEventsQuery = FirebaseFirestore.instance.collection(
+      'events',
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +34,8 @@ class AdminDashboard extends StatelessWidget {
               if (added == true && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                      content: Text("User created/updated successfully")),
+                    content: Text("User created/updated successfully"),
+                  ),
                 );
               }
             },
@@ -61,9 +65,9 @@ class AdminDashboard extends StatelessWidget {
                   );
                 } catch (e) {
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Error: $e")),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text("Error: $e")));
                   }
                 }
               },
@@ -77,16 +81,49 @@ class AdminDashboard extends StatelessWidget {
             const SizedBox(height: 24),
 
             // ✅ Materials Management Section
-            const Text("Materials Management",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              "Materials Management",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
+            //             SizedBox(
+            //     height: 300, // Choose a reasonable, fixed height
+            //     child: const AdminApprovalScreen(),
+            // ),
             const AdminApprovalScreen(),
+            // New Section Header for Courses
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "All Courses",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    // Re-implement navigation to AddCourseScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AddCourseScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const SizedBox(height: 24),
+            CourseListScreen(),
 
             const SizedBox(height: 24),
 
             // ✅ Calendar Section
-            const Text("Events Calendar",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+              "Events Calendar",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             SizedBox(
               height: 500,

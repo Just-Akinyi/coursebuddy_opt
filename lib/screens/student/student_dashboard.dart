@@ -236,7 +236,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
         return const HomeScreen();
       case 1:
         // return StudentMaterialsScreen(courseId: widget.courseId);
-        return StudentNotesScreen();
+        return LessonCard();
       case 2:
         return _buildQuizzesPage();
       case 3:
