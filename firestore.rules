@@ -2,59 +2,61 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // 🔹 Role checks (from Firebase custom claims)
     function isSuperAdmin() {
       return request.auth != null && request.auth.token.roles.superadmin == true;
     }
     function isAdmin() {
       return request.auth != null && request.auth.token.roles.admin == true;
     }
+    // ✅ NEW: Teacher function
+    function isTeacher() {
+      return request.auth != null && request.auth.token.roles.teacher == true;
+    }
 
     // 🔹 USERS collection
     match /users/{uid} {
-      // Create: user can create their own doc, admins & superadmins can also create
       allow create: if request.auth != null &&
         (request.auth.uid == uid || isAdmin() || isSuperAdmin());
 
-      // Update: user can update their own doc EXCEPT roles; admins & superadmins unrestricted
       allow update: if request.auth != null &&
         (
-          isSuperAdmin() ||
-          (request.auth.uid == uid && !('roles' in request.resource.data)) ||
-          isAdmin()
+          isAdmin() || isSuperAdmin()
+          ||
+          (request.auth.uid == uid
+            && request.resource.data.keys().hasOnly([
+              "xp", "level", "completedLessons"
+            ]))
         );
 
-      // Delete: only admins & superadmins, but admins can’t delete themselves
       allow delete: if request.auth != null &&
         (isSuperAdmin() || (isAdmin() && request.auth.uid != uid));
 
-      // Read: any authenticated user
       allow get, list: if request.auth != null;
+    }
+
+    // 🔹 LESSONS collection
+    match /lessons/{docId} {
+      // ✅ MODIFIED: Allow Teachers, Admins, or SuperAdmins to create lessons
+      allow create: if (isTeacher() || isAdmin() || isSuperAdmin())
+                    && request.resource.data.status == "waiting_approval"
+                    && request.resource.data.createdBy == request.auth.uid
+                    && request.resource.data.courseId is string; // Ensure courseId is present
+
+      // Allow Admin/SuperAdmin to read ALL lessons, otherwise only approved or user-created lessons.
+      allow get, list: if isAdmin() || isSuperAdmin()
+                        || (request.auth != null
+                            && (resource.data.status == "approved"
+                                || resource.data.createdBy == request.auth.uid));
+
+      allow update: if isAdmin() || isSuperAdmin();
+      allow delete: if isAdmin() || isSuperAdmin();
     }
 
     // 🔹 COURSES collection
     match /courses/{doc} {
-      allow read: if true; // public read
+      // Allow read for everyone to populate the dropdown
+      allow read: if true; 
       allow write: if isAdmin() || isSuperAdmin();
-    }
-
-    // 🔹 NOTES collection
-    match /notes/{docId} {
-      // ✅ Teachers (any authenticated user) can create "waiting_approval" notes
-      allow create: if request.auth != null
-                    && request.resource.data.status == "waiting_approval"
-                    && request.resource.data.createdBy == request.auth.uid;
-
-      // ✅ Teachers can read their own notes (approved or not)
-      allow get, list: if request.auth != null
-                        && (resource.data.status == "approved"
-                            || resource.data.createdBy == request.auth.uid);
-
-      // ✅ Admins & superadmins can approve/reject
-      allow update: if isAdmin() || isSuperAdmin();
-
-      // ✅ Only admins/superadmins can delete
-      allow delete: if isAdmin() || isSuperAdmin();
     }
 
     // 🔹 ADMIN-only collection
@@ -62,11 +64,9 @@ service cloud.firestore {
       allow read, write: if isAdmin() || isSuperAdmin();
     }
 
-    // 🔹 Default for all other collections
+    // 🔹 Default for other collections
     match /{collection}/{document} {
-      // Authenticated users can read
       allow read: if request.auth != null;
-      // Only admins & superadmins can write
       allow write: if isAdmin() || isSuperAdmin();
     }
   }

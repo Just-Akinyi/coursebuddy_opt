@@ -2,22 +2,34 @@
 <html>
 <head>
   <base href="$FLUTTER_BASE_HREF">
-
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Hands-on code guide.">
 
-  <!-- iOS meta tags & icons -->
+  <!-- iOS meta tags -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="coursebuddy">
+  <meta name="apple-mobile-web-app-title" content="CourseBuddy">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="custom-favicon.png"/>
 
-  <title>coursebuddy</title>
-  <link rel="manifest" href="manifest.json">
+  <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
+  <meta property="og:title" content="CourseBuddy – Learn Coding Easily" />
+  <meta property="og:description" content="Hands-on coding guides, notes, and projects for students and teachers." />
+  <meta property="og:image" content="https://course-budy.web.app/preview.png?v=2" />
+  <meta property="og:url" content="https://course-budy.web.app" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card fallback -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CourseBuddy – Learn Coding Easily" />
+  <meta name="twitter:description" content="Hands-on coding guides, notes, and projects for students and teachers." />
+  <meta name="twitter:image" content="https://course-budy.web.app/preview.png?v=2" />
+
+  <title>CourseBuddy</title>
+  <link rel="manifest" href="/manifest.json">
 
   <style>
     body {
@@ -31,7 +43,6 @@
       height: 100vh;
       transition: opacity 0.6s ease, transform 0.6s ease;
     }
-
     .spinner {
       position: relative;
       width: 160px;
@@ -40,7 +51,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .spinner::before {
       content: "";
       position: absolute;
@@ -49,25 +59,21 @@
       border: 10px solid transparent;
       border-radius: 50%;
       background: conic-gradient(orange, lightblue);
-      -webkit-mask: 
-        radial-gradient(farthest-side, transparent calc(100% - 10px), black 0);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), black 0);
       -webkit-mask-composite: destination-in;
               mask-composite: intersect;
       animation: spin 1.5s linear infinite;
     }
-
     .spinner img {
       width: 100px;
       height: auto;
       border-radius: 12px;
       z-index: 2;
     }
-
     @keyframes spin {
       0%   { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
     /* Hidden state for smooth exit */
     #loading.fade-out {
       opacity: 0;
